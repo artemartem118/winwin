@@ -49,6 +49,14 @@ export default new Vuex.Store({
                 console.log(e)
             }
         },
+        async deleteImageFromDB( { dispatch }, payload ) {
+            try {
+                await firebase.database().ref('images/' + payload).remove()
+                dispatch('getImagesFromDB')
+            } catch ( e ) {
+                console.log(e)
+            }
+        }
     },
     getters: {
         getImages( state ) {

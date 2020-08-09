@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <div class="header-logo">
-            <router-link class="header-logo__link" :to="{name: 'PhotosPage'}">
+            <router-link class="header-logo__link" :to="{name: 'ImagesPage'}">
                 Wi<span class="header-logo_size">n</span>Wi<span class="header-logo_size">n</span>
             </router-link>
         </div>
