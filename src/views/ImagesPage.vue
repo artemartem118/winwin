@@ -1,19 +1,19 @@
 <template>
     <div class="photos-pages">
         <div v-if="isInputFile" class="photos-pages__menu menu-actions">
-            <Button name_button="Загрузить"/>
+            <Button @up="chooseImage" name_button="Загрузить"/>
             <div class="input-file">
                 <input ref="inputFile" type="file">
             </div>
         </div>
         <div v-else class="photos-pages__menu menu-actions">
-            <Button name_button="Добавить"/>
-            <Button name_button="Не добавлять"/>
+            <Button @up="setImage" name_button="Добавить"/>
+            <Button @up="getBack" name_button="Не добавлять"/>
         </div>
         <div class="photos-pages__items photos-container"></div>
-        <div class="photos-container__item" v-for="item in getImages" :key="item.id">
-                <Photo :imgDB="item.imgDB"/>
-        </div>
+<!--        <div class="photos-container__item" v-for="item in getImages" :key="item.id">-->
+<!--            <Photo :imgDB="item.imgDB"/>-->
+<!--        </div>-->
         <div class="photos-pages__info">
             Фотографий нет
         </div>
@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 import Image from '@/components/Image'
 import Button from '@/components/common/Button'
 import Preloader from '@/components/common/Preloader'
@@ -34,6 +36,27 @@ export default {
             isInputFile: true,
             isFetching: false
         }
+    },
+    methods: {
+        ...mapActions([ 'setImageIntoDB' ]),
+        chooseImage() {
+            this.inputFileData.click()
+            this.isInputFile = false
+        },
+        async setImage() {
+            this.isFetching = true
+
+            const file = this.inputFileData.files[0]
+            await this.setImageIntoDB(file)
+            this.isFetching = false
+            this.isInputFile = true
+        },
+        getBack() {
+            this.isInputFile = true
+        }
+    },
+    mounted() {
+        this.inputFileData = this.$refs.inputFile
     }
 }
 </script>
