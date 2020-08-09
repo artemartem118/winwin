@@ -38,11 +38,11 @@ export default {
     data() {
         return {
             isClickOnInputFile: true,
-            isFetching: false,
+            isFetching: false
         }
     },
     methods: {
-        ...mapActions([ 'getImagesFromDB', 'setImageIntoDB' ]),
+        ...mapActions([ 'getImagesFromDB', 'setImageIntoDB', 'updateOrderImagesDB' ]),
         chooseImage() {
             this.inputFileData.click()
             this.isClickOnInputFile = false
@@ -66,8 +66,11 @@ export default {
             get() {
                 return this.getImages
             },
-            set( value ) {
+            async set( value ) {
+                this.isFetching = true
+                await this.updateOrderImagesDB(value)
                 console.log(value)
+                this.isFetching = false
             }
         }
     },
