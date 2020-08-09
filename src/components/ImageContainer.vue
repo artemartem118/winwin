@@ -1,14 +1,14 @@
 <template>
     <div class="image-container">
-        <img class="image-container__item" :src="imgDB" alt="фото">
+        <img class="image-container__item" :src="imageUrl" alt="фото">
     </div>
 </template>
 
 <script>
 export default {
-    name: 'Image',
+    name: 'ImageContainer',
     props: {
-        imgDB: String
+        imageUrl: String
     }
 }
 </script>

@@ -11,9 +11,9 @@
             <Button @up="getBack" name_button="Не добавлять"/>
         </div>
         <div class="photos-pages__items photos-container"></div>
-<!--        <div class="photos-container__item" v-for="item in getImages" :key="item.id">-->
-<!--            <Photo :imgDB="item.imgDB"/>-->
-<!--        </div>-->
+                <div class="photos-container__item" v-for="item in getImages" :key="item.imageId">
+                    <ImageContainer :imageUrl="item.imageUrl"/>
+                </div>
         <div class="photos-pages__info">
             Фотографий нет
         </div>
@@ -22,15 +22,15 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
-import Image from '@/components/Image'
+import ImageContainer from '@/components/ImageContainer'
 import Button from '@/components/common/Button'
 import Preloader from '@/components/common/Preloader'
 
 export default {
     name: 'ImagesPage',
-    components: { Image, Button, Preloader },
+    components: { ImageContainer, Button, Preloader },
     data() {
         return {
             isInputFile: true,
@@ -38,7 +38,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions([ 'setImageIntoDB' ]),
+        ...mapActions([ 'getImagesFromDB', 'setImageIntoDB' ]),
         chooseImage() {
             this.inputFileData.click()
             this.isInputFile = false
@@ -55,8 +55,14 @@ export default {
             this.isInputFile = true
         }
     },
-    mounted() {
+    computed: {
+        ...mapGetters([ 'getImages' ])
+    },
+    async mounted() {
         this.inputFileData = this.$refs.inputFile
+        this.isFetching = true
+        await this.getImagesFromDB()
+        this.isFetching = false
     }
 }
 </script>

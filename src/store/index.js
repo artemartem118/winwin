@@ -8,8 +8,28 @@ export default new Vuex.Store({
     state: {
         images: []
     },
-    mutations: {},
+    mutations: {
+        SET_IMAGES( state, payload ) {
+            state.images = payload
+        }
+    },
     actions: {
+        async getImagesFromDB( { commit } ) {
+            try {
+                const ref = await firebase.database().ref('images')
+                ref.once('value', ( snapshot ) => {
+                    const imagesData = snapshot.val()
+                    if ( !imagesData ) {
+                        commit('SET_IMAGES', [])
+                        return
+                    }
+                    const data = Object.values(imagesData)
+                    commit('SET_IMAGES', data)
+                })
+            } catch ( e ) {
+                console.log(e)
+            }
+        },
         async setImageIntoDB( { dispatch }, file ) {
             try {
                 const ref = firebase.storage().ref()
@@ -24,10 +44,16 @@ export default new Vuex.Store({
                     imageId,
                     imageUrl
                 })
+                await dispatch('getImagesFromDB')
             } catch ( e ) {
                 console.log(e)
             }
         },
+    },
+    getters: {
+        getImages( state ) {
+            return state.images
+        }
     },
     modules: {}
 })
