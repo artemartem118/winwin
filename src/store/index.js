@@ -30,6 +30,26 @@ export default new Vuex.Store({
                 console.log(e)
             }
         },
+        async updateOrderImagesDB( { state, dispatch }, payload ) {
+            try {
+                for ( const item of state.images ) {
+                    await firebase.database().ref('images/' + item.imageId).remove()
+                }
+                const newData = {}
+                let newId = 0
+                payload.forEach(item => {
+                    newId++
+                    newData[`images/${ newId }`] = {
+                        imageId: newId,
+                        imageUrl: item.imageUrl
+                    }
+                })
+                await firebase.database().ref().update(newData)
+                await dispatch('getImagesFromDB')
+            } catch ( e ) {
+                console.log(e)
+            }
+        },
         async updateImageAfterEdit( {}, { file, imageUrl, imageId } ) {
             try {
                 const ref = await firebase.storage().refFromURL(imageUrl)

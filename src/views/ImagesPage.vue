@@ -10,13 +10,13 @@
             <Button @up="setImage" name_button="Добавить"/>
             <Button @up="getBack" name_button="Не добавлять"/>
         </div>
-        <div v-if="getImages.length" class="images-pages__items images-container">
+        <draggable v-if="getImages.length" v-model="newSequenceImg" class="images-pages__items images-container">
             <div class="images-container__item" v-for="item in getImages" :key="item.imageId">
                 <router-link :to="{name: 'ImagePage', params:{ id: item.imageId }}">
                     <ImageContainer :imageUrl="item.imageUrl"/>
                 </router-link>
             </div>
-        </div>
+        </draggable>
         <div v-else class="images-pages__info">
             Фотографий нет
         </div>
@@ -26,6 +26,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import draggable from 'vuedraggable'
 
 import ImageContainer from '@/components/ImageContainer'
 import Button from '@/components/common/Button'
@@ -33,7 +34,7 @@ import Preloader from '@/components/common/Preloader'
 
 export default {
     name: 'ImagesPage',
-    components: { ImageContainer, Button, Preloader },
+    components: { ImageContainer, Button, Preloader, draggable },
     data() {
         return {
             isClickOnInputFile: true,
@@ -41,7 +42,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions([ 'getImagesFromDB', 'setImageIntoDB' ]),
+        ...mapActions([ 'getImagesFromDB', 'setImageIntoDB', 'updateOrderImagesDB' ]),
         chooseImage() {
             this.inputFileData.click()
             this.isClickOnInputFile = false
@@ -60,7 +61,18 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([ 'getImages' ])
+        ...mapGetters([ 'getImages' ]),
+        newSequenceImg: {
+            get() {
+                return this.getImages
+            },
+            async set( value ) {
+                this.isFetching = true
+                await this.updateOrderImagesDB(value)
+                console.log(value)
+                this.isFetching = false
+            }
+        }
     },
     async mounted() {
         this.inputFileData = this.$refs.inputFile
