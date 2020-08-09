@@ -1,20 +1,23 @@
 <template>
-    <div class="photos-pages">
-        <div v-if="isClickOnInputFile" class="photos-pages__menu menu-actions">
+    <div class="images-pages">
+        <div v-if="isClickOnInputFile" class="images-pages__menu menu-actions">
             <Button @up="chooseImage" name_button="Загрузить"/>
             <div class="input-file">
                 <input ref="inputFile" type="file">
             </div>
         </div>
-        <div v-else class="photos-pages__menu menu-actions">
+        <div v-else class="images-pages__menu menu-actions">
             <Button @up="setImage" name_button="Добавить"/>
             <Button @up="getBack" name_button="Не добавлять"/>
         </div>
-        <div class="photos-pages__items photos-container"></div>
-                <div class="photos-container__item" v-for="item in getImages" :key="item.imageId">
+        <div v-if="getImages.length" class="images-pages__items images-container">
+            <div class="images-container__item" v-for="item in getImages" :key="item.imageId">
+                <router-link :to="{name: 'ImagePage', params:{ id: item.imageId }}">
                     <ImageContainer :imageUrl="item.imageUrl"/>
-                </div>
-        <div class="photos-pages__info">
+                </router-link>
+            </div>
+        </div>
+        <div v-else class="images-pages__info">
             Фотографий нет
         </div>
         <Preloader v-if="isFetching"/>
@@ -70,7 +73,7 @@ export default {
 <style lang="scss" scoped>
 @import "../styles/variables";
 
-.photos-pages {
+.images-pages {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -95,7 +98,7 @@ export default {
     justify-content: space-around;
 }
 
-.photos-container {
+.images-container {
     display: flex;
     flex-wrap: wrap;
 

@@ -1,12 +1,12 @@
 <template>
-    <div class="photo-container">
-        <div class="photo-container__item">
-            <div class="photo">
-                <img class="photo__img" alt="фото">
+    <div class="image-container">
+        <div class="image-container__item">
+            <div class="image">
+                <img class="image__img" :src="imageUrl" alt="фото">
             </div>
         </div>
 
-        <div class="photo-container__menu button-container">
+        <div class="image-container__menu button-container">
             <Button class="button-container__item" name_button="Редактировать"/>
             <Button class="button-container__item" name_button="Удалить"/>
             <Button class="button-container__item" name_button="Скачать"/>
@@ -17,24 +17,39 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Button from '@/components/common/Button'
 import Preloader from '@/components/common/Preloader'
 
 export default {
     name: 'ImagePage',
+    components: { Preloader, Button },
+    props: {
+        imageUrl: String
+    },
     data() {
         return {
-            isFetching: false
+            imageUrl: null,
+            isFetching: false,
+            imageId: null
         }
     },
-    components: { Preloader, Button }
+    computed: {
+        ...mapGetters([ 'getImages' ])
+    },
+    mounted() {
+        const img = this.getImages.find(img => img.imageId === this.$route.params.id)
+        console.log(img)
+        this.imageUrl = img.imageUrl
+        this.imageId = img.imageId
+    }
 }
 </script>
 
 <style lang="scss">
 @import "../styles/variables";
 
-.photo-container {
+.image-container {
     display: flex;
     height: $base * 600;
 
@@ -57,7 +72,7 @@ export default {
     }
 }
 
-.photo {
+.image {
     height: 100%;
     width: 100%;
 
