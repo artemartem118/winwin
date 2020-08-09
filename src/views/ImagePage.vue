@@ -8,7 +8,7 @@
 
         <div class="image-container__menu button-container">
             <Button class="button-container__item" name_button="Редактировать"/>
-            <Button class="button-container__item" name_button="Удалить"/>
+            <Button @up="onDeleteImage" class="button-container__item" name_button="Удалить"/>
             <Button class="button-container__item" name_button="Скачать"/>
             <Button class="button-container__item" name_button="Назад"/>
         </div>
@@ -17,16 +17,13 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import Button from '@/components/common/Button'
 import Preloader from '@/components/common/Preloader'
 
 export default {
     name: 'ImagePage',
     components: { Preloader, Button },
-    props: {
-        imageUrl: String
-    },
     data() {
         return {
             imageUrl: null,
@@ -34,12 +31,20 @@ export default {
             imageId: null
         }
     },
+    methods: {
+        ...mapActions([ 'deleteImageFromDB' ]),
+        async onDeleteImage() {
+            this.isFetching = true
+            await this.deleteImageFromDB(this.imageId)
+            this.isFetching = false
+            await this.$router.replace({ name: 'ImagesPage' })
+        }
+    },
     computed: {
         ...mapGetters([ 'getImages' ])
     },
     mounted() {
         const img = this.getImages.find(img => img.imageId === this.$route.params.id)
-        console.log(img)
         this.imageUrl = img.imageUrl
         this.imageId = img.imageId
     }
