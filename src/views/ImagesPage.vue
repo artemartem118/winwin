@@ -1,6 +1,6 @@
 <template>
     <div class="photos-pages">
-        <div v-if="isInputFile" class="photos-pages__menu menu-actions">
+        <div v-if="isClickOnInputFile" class="photos-pages__menu menu-actions">
             <Button @up="chooseImage" name_button="Загрузить"/>
             <div class="input-file">
                 <input ref="inputFile" type="file">
@@ -33,7 +33,7 @@ export default {
     components: { ImageContainer, Button, Preloader },
     data() {
         return {
-            isInputFile: true,
+            isClickOnInputFile: true,
             isFetching: false
         }
     },
@@ -41,18 +41,19 @@ export default {
         ...mapActions([ 'getImagesFromDB', 'setImageIntoDB' ]),
         chooseImage() {
             this.inputFileData.click()
-            this.isInputFile = false
+            this.isClickOnInputFile = false
         },
         async setImage() {
             this.isFetching = true
 
             const file = this.inputFileData.files[0]
             await this.setImageIntoDB(file)
+
             this.isFetching = false
-            this.isInputFile = true
+            this.isClickOnInputFile = true
         },
         getBack() {
-            this.isInputFile = true
+            this.isClickOnInputFile = true
         }
     },
     computed: {
