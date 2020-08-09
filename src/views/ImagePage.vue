@@ -7,7 +7,7 @@
         </div>
 
         <div class="image-container__menu button-container">
-            <Button class="button-container__item" name_button="Редактировать"/>
+            <Button @up="onEditImage" class="button-container__item" name_button="Редактировать"/>
             <Button @up="onDeleteImage" class="button-container__item" name_button="Удалить"/>
             <Button class="button-container__item" name_button="Скачать"/>
             <Button class="button-container__item" name_button="Назад"/>
@@ -38,6 +38,9 @@ export default {
             await this.deleteImageFromDB(this.imageId)
             this.isFetching = false
             await this.$router.replace({ name: 'ImagesPage' })
+        },
+        onEditImage() {
+            this.$router.replace({ name: 'EditImagePage', params: { id: this.imageId } })
         }
     },
     computed: {

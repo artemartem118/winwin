@@ -30,6 +30,23 @@ export default new Vuex.Store({
                 console.log(e)
             }
         },
+        async updateImageAfterEdit( {}, { file, imageUrl, imageId } ) {
+            try {
+                const ref = await firebase.storage().refFromURL(imageUrl)
+                const help = await ref.put(file)
+                const downloadURL = await help.ref.getDownloadURL()
+
+                const newData = {
+                    [`imagesData/${ imageId }`]: {
+                        imageId,
+                        imageUrl: downloadURL
+                    }
+                }
+                await firebase.database().ref().update(newData)
+            } catch ( e ) {
+                console.log(e)
+            }
+        },
         async setImageIntoDB( { dispatch }, file ) {
             try {
                 const ref = firebase.storage().ref()
