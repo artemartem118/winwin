@@ -1,0 +1,9 @@
+$base-font: 16;
+
+@function strip-unit($sum) {
+    @return $sum / ($sum * 0 + 1);
+}
+
+@function rem($sum) {
+    @return strip-unit($sum) / $base-font * 1rem;
+}
