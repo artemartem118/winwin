@@ -10,7 +10,7 @@
             <Button @up="onEditImage" class="button-container__item" name_button="Редактировать"/>
             <Button @up="onDeleteImage" class="button-container__item" name_button="Удалить"/>
             <Button @up="onDownloadImage" class="button-container__item" name_button="Скачать"/>
-            <Button class="button-container__item" name_button="Назад"/>
+            <Button @up="getBack" class="button-container__item" name_button="Назад"/>
         </div>
         <Preloader v-if="isFetching"/>
     </div>
@@ -37,7 +37,10 @@ export default {
             this.isFetching = true
             await this.deleteImageFromDB(this.imageId)
             this.isFetching = false
-            await this.$router.replace({ name: 'ImagesPage' })
+            this.getBack()
+        },
+        getBack() {
+            this.$router.replace({ name: 'ImagesPage' })
         },
         onEditImage() {
             this.$router.replace({ name: 'EditImagePage', params: { id: this.imageId } })
