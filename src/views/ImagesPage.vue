@@ -1,20 +1,23 @@
 <template>
-    <div class="photos-pages">
-        <div v-if="isInputFile" class="photos-pages__menu menu-actions">
-            <Button name_button="Загрузить"/>
+    <div class="images-pages">
+        <div v-if="isClickOnInputFile" class="images-pages__menu menu-actions">
+            <Button @up="chooseImage" name_button="Новое изображение"/>
             <div class="input-file">
                 <input ref="inputFile" type="file">
             </div>
         </div>
-        <div v-else class="photos-pages__menu menu-actions">
-            <Button name_button="Добавить"/>
-            <Button name_button="Не добавлять"/>
+        <div v-else class="images-pages__menu menu-actions">
+            <Button @up="setImage" name_button="Загрузить"/>
+            <Button @up="getBack" name_button="Не загружать"/>
         </div>
-        <div class="photos-pages__items photos-container"></div>
-        <div class="photos-container__item" v-for="item in getImages" :key="item.id">
-                <Photo :imgDB="item.imgDB"/>
-        </div>
-        <div class="photos-pages__info">
+        <draggable v-if="getImages.length" v-model="newSequenceImg" class="images-pages__items images-container">
+            <div class="images-container__item" v-for="item in getImages" :key="item.imageId">
+                <router-link :to="{name: 'ImagePage', params:{ id: item.imageId }}">
+                    <ImageContainer :imageUrl="item.imageUrl"/>
+                </router-link>
+            </div>
+        </draggable>
+        <div v-else class="images-pages__info">
             Фотографий нет
         </div>
         <Preloader v-if="isFetching"/>
@@ -22,25 +25,66 @@
 </template>
 
 <script>
-import Image from '@/components/Image'
+import { mapActions, mapGetters } from 'vuex'
+import draggable from 'vuedraggable'
+
+import ImageContainer from '@/components/ImageContainer'
 import Button from '@/components/common/Button'
 import Preloader from '@/components/common/Preloader'
 
 export default {
     name: 'ImagesPage',
-    components: { Image, Button, Preloader },
+    components: { ImageContainer, Button, Preloader, draggable },
     data() {
         return {
-            isInputFile: true,
+            isClickOnInputFile: true,
             isFetching: false
         }
+    },
+    methods: {
+        ...mapActions([ 'getImagesFromDB', 'setImageIntoDB', 'updateOrderImagesDB' ]),
+        chooseImage() {
+            this.inputFileData.click()
+            this.isClickOnInputFile = false
+        },
+        async setImage() {
+            this.isFetching = true
+
+            const file = this.inputFileData.files[0]
+            await this.setImageIntoDB(file)
+
+            this.isFetching = false
+            this.isClickOnInputFile = true
+        },
+        getBack() {
+            this.isClickOnInputFile = true
+        }
+    },
+    computed: {
+        ...mapGetters([ 'getImages' ]),
+        newSequenceImg: {
+            get() {
+                return this.getImages
+            },
+            async set( value ) {
+                this.isFetching = true
+                await this.updateOrderImagesDB(value)
+                this.isFetching = false
+            }
+        }
+    },
+    async mounted() {
+        this.inputFileData = this.$refs.inputFile
+        this.isFetching = true
+        await this.getImagesFromDB()
+        this.isFetching = false
     }
 }
 </script>
 <style lang="scss" scoped>
 @import "../styles/variables";
 
-.photos-pages {
+.images-pages {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -65,7 +109,7 @@ export default {
     justify-content: space-around;
 }
 
-.photos-container {
+.images-container {
     display: flex;
     flex-wrap: wrap;
 
