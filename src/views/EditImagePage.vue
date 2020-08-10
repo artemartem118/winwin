@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import VueCropper from 'vue-cropperjs'
 import Button from '@/components/common/Button'
 import Preloader from '@/components/common/Preloader'
@@ -50,7 +50,7 @@ export default {
         },
         getBack() {
             this.$router.replace({ name: 'ImagePage', params: { id: this.imageId } })
-        },
+        }
     },
     computed: {
         ...mapGetters([ 'getImages' ])

@@ -1,14 +1,14 @@
 <template>
     <div class="images-pages">
         <div v-if="isClickOnInputFile" class="images-pages__menu menu-actions">
-            <Button @up="chooseImage" name_button="Загрузить"/>
+            <Button @up="chooseImage" name_button="Новое изображение"/>
             <div class="input-file">
                 <input ref="inputFile" type="file">
             </div>
         </div>
         <div v-else class="images-pages__menu menu-actions">
-            <Button @up="setImage" name_button="Добавить"/>
-            <Button @up="getBack" name_button="Не добавлять"/>
+            <Button @up="setImage" name_button="Загрузить"/>
+            <Button @up="getBack" name_button="Не загружать"/>
         </div>
         <draggable v-if="getImages.length" v-model="newSequenceImg" class="images-pages__items images-container">
             <div class="images-container__item" v-for="item in getImages" :key="item.imageId">
@@ -69,7 +69,6 @@ export default {
             async set( value ) {
                 this.isFetching = true
                 await this.updateOrderImagesDB(value)
-                console.log(value)
                 this.isFetching = false
             }
         }
