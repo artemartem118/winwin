@@ -9,34 +9,33 @@ import EditImagePage from '@/views/EditImagePage'
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    name: 'MainLayout',
-    component: MainLayout,
-    children: [
-      {
-        path: '',
-        name: 'ImagesPage',
-        component: ImagesPage
-      },
-      {
-        path: ':id',
-        name: 'ImagePage',
-        component: ImagePage
-      },
-      {
-        path: ':id/edit',
-        name: 'EditImagePage',
-        component: EditImagePage
-      }
-    ]
-  }
+    {
+        path: '/',
+        component: MainLayout,
+        children: [
+            {
+                path: '',
+                name: 'ImagesPage',
+                component: ImagesPage
+            },
+            {
+                path: ':id',
+                name: 'ImagePage',
+                component: ImagePage
+            },
+            {
+                path: ':id/edit',
+                name: 'EditImagePage',
+                component: EditImagePage
+            }
+        ]
+    }
 ]
 
 const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes
 })
 
 export default router

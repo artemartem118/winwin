@@ -93,6 +93,15 @@ export default new Vuex.Store({
             } catch ( e ) {
                 console.log(e)
             }
+        },
+        async downloadImage( {}, payload ) {
+            const aElement = document.createElement('a')
+            aElement.download = 'image.jpg'
+            const response = await fetch(payload)
+            const data = await response.blob()
+            aElement.target = '_blank'
+            aElement.href = URL.createObjectURL(data)
+            aElement.click()
         }
     },
     getters: {
